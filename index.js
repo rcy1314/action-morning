@@ -12,17 +12,17 @@ function report_bug () {
     window.open('https://github.com/zkeq/news/issues/new?assignees=zkeq&labels=bug%2Capi&template=main.yaml&title=%5B%E6%8E%A5%E5%8F%A3%E5%A4%B1%E6%95%88%5D%3A+');
 }
 
-function handleError (e) {
+function handleError (e) { 
     NProgress.done();
     Notiflix.Notify.failure(`An error occurred \uD83D\uDE1E ${e}`, ()=>report_bug());
 }
 
-function handleError_zhihu (e) {
+function handleError_zhihu (e) { 
     NProgress.done();
     Notiflix.Notify.failure(`知乎源：An error occurred \uD83D\uDE1E ${e}`, ()=>report_bug());
 }
 
-function handleError_163 (e) {
+function handleError_163 (e) { 
     NProgress.done();
     Notiflix.Notify.failure(`网易新闻源：An error occurred \uD83D\uDE1E ${e}`, ()=>report_bug());
 }
@@ -72,13 +72,13 @@ function str_to_date(str) {
         const year = date_str.split('年')[0];
         const month = date_str.split('年')[1].split('月')[0];
         const day = date_str.split('月')[1].split('日')[0];
-        const cache = `${year}-${month}-${day}`;
-        return cache;
+        const cache = `${year}-${month}-${day}`; 
+        return cache; 
     }catch(error){
         const month = date_str.split('月')[0];
         const day = date_str.split('月')[1].split('日')[0];
-        const cache = `${month}-${day}`;
-        return cache;
+        const cache = `${month}-${day}`;  
+        return cache;     
     }
 }
 
@@ -86,14 +86,14 @@ function str_to_date(str) {
 function zhihu_first_load () {
     try{
         const days = JSON.parse(this.responseText);
-        if (days['suc']) {
-            days_load.call(this, show_only = false);
-            Notiflix.Notify.success('当前知乎数据源为最新数据');
-            const cache = str_to_date(days['data']['date']);
-            localStorage.setItem('zhihu_cache', cache);
-        } else{
-            handleError_zhihu(days['data']['title']);
-        }
+    if (days['suc']) {
+        days_load.call(this, show_only = false);
+        Notiflix.Notify.success('当前知乎数据源为最新数据');
+        const cache = str_to_date(days['data']['date']);
+        localStorage.setItem('zhihu_cache', cache);
+    } else{
+        handleError_zhihu(days['data']['title']);
+    }
     }catch(error){
         handleError_zhihu(error);
     }
@@ -101,14 +101,14 @@ function zhihu_first_load () {
 
 function _163_init_load () {
     try{
-        const days = JSON.parse(this.responseText);
-        if (days['suc']) {
-            Notiflix.Notify.success('当前网易新闻数据源为最新数据');
-            const cache = str_to_date(days['data']['date']);
-            localStorage.setItem('163_cache', cache);
-        } else{
-            handleError_163(days['data']['title']);
-        }
+    const days = JSON.parse(this.responseText);
+    if (days['suc']) {
+        Notiflix.Notify.success('当前网易新闻数据源为最新数据');
+        const cache = str_to_date(days['data']['date']);
+        localStorage.setItem('163_cache', cache);
+    } else{
+        handleError_163(days['data']['title']);
+    }
     }catch(error){
         handleError_163(error);
     }
@@ -132,55 +132,55 @@ function get_now_str () {
 }
 
 
-function days_load (show_only) {
+function days_load (show_only) { 
     try{
-        NProgress.done();
-        const days = JSON.parse(this.responseText);
-        if (days['suc']) {
-            data = days['data'];
-            // 加载标题
-            if (data['date'].includes('月')){
-                document.getElementById('date').innerHTML = data['date'];
-            } else {
-                document.getElementById('date').innerHTML = '暂无数据';
-            }
-            // 显示通知
-            try {
-                const date_now = str_to_date(data['date']);
-                const now_str = get_now_str();
-                Notiflix.Notify.success(`${now_str}源: ${date_now} 更新成功`, {
-                    showOnlyTheLastOne: show_only,    });
-            } catch (error) {
-                const now_str = get_now_str();
-                Notiflix.Notify.success(`${now_str}源: 更新成功`, {
-                    showOnlyTheLastOne: show_only,    });
-            }
-            // 加载weiyu
-            if (data['weiyu'].includes('【微语】')){
-                document.getElementById('weiyu').innerHTML = data['weiyu'].replace("【微语】", '');
-            } else {
-                // 获取一言
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'https://v1.hitokoto.cn');
-                xhr.onload = weiyu_load;
-                xhr.onerror = handleError;
-                xhr.send();
-            }
-
-            // 清空原有的新闻
-            document.getElementById('news').innerHTML = '';
-            for (let i = 0; i < data['news'].length; i++) {
-                // 将其变成 li 并插入ol
-                const li = document.createElement('li');
-                li.innerHTML = data['news'][i];
-                // 插入新的 li
-                document.getElementById('news').appendChild(li);
-            }
-            // // 滚动条滚到顶部
-            // window.scrollTo(0, 0);
+    NProgress.done();
+    const days = JSON.parse(this.responseText);
+    if (days['suc']) {   
+        data = days['data'];
+        // 加载标题
+        if (data['date'].includes('月')){
+            document.getElementById('date').innerHTML = data['date'];
         } else {
-            handleError(days['data']['title']);
-        }}
+            document.getElementById('date').innerHTML = '暂无数据';
+        }
+        // 显示通知
+        try {
+            const date_now = str_to_date(data['date']);
+            const now_str = get_now_str();
+            Notiflix.Notify.success(`${now_str}源: ${date_now} 更新成功`, {
+                showOnlyTheLastOne: show_only,    });
+        } catch (error) {
+            const now_str = get_now_str();
+            Notiflix.Notify.success(`${now_str}源: 更新成功`, {
+                showOnlyTheLastOne: show_only,    });   
+        }
+        // 加载weiyu
+        if (data['weiyu'].includes('【微语】')){
+            document.getElementById('weiyu').innerHTML = data['weiyu'].replace("【微语】", '');
+        } else {
+            // 获取一言
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://v1.hitokoto.cn');
+            xhr.onload = weiyu_load;
+            xhr.onerror = handleError;
+            xhr.send();
+        }
+        
+        // 清空原有的新闻
+        document.getElementById('news').innerHTML = '';
+        for (let i = 0; i < data['news'].length; i++) {
+            // 将其变成 li 并插入ol
+            const li = document.createElement('li');
+            li.innerHTML = data['news'][i];
+            // 插入新的 li
+            document.getElementById('news').appendChild(li);
+        }
+        // // 滚动条滚到顶部
+        // window.scrollTo(0, 0);
+    } else {
+        handleError(days['data']['title']);
+    }}
     catch(error){
         handleError(error);
     }
@@ -209,7 +209,7 @@ function cache_admin() {
             // 否则直接加载
             bing_load(index);
         }
-
+        
     }else{
         get_bing_into_local_storage();
         // 获取当前时间
@@ -239,7 +239,7 @@ function bing_load (index) {
 }
 
 function get_day_news(index, origin){
-    try{
+      try{
         NProgress.start();
         const xhr = new XMLHttpRequest();
         if (origin === 'zhihu') {
@@ -251,9 +251,9 @@ function get_day_news(index, origin){
         xhr.onload = days_load;
         xhr.onerror = handleError;
         xhr.send();
-    } catch(error){
-        handleError(error);
-    }
+      } catch(error){
+            handleError(error);
+        }
 }
 
 function after (){
